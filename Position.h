@@ -1,36 +1,40 @@
-#pragma once
+
+
 #include "Block.h"
 #include "BlockGrid.h"
 #include "Pair.h"
-
+#ifndef POSITION_H
+#define POSITION_H
 
 class Position
 {
 private:
 	int m_index;					//holds the index of position
 	int m_value;					//holds the value of position
-	int m_gridRowNum;				// block row position in block grid vector
-	int m_gridColNum;				//block col position in block grid vector
+	int m_gridRowNumber;				// block row position in block grid vector
+	int m_gridColumnNumber;				//block column position in block grid vector
 	int m_cellRow;					//cell row in block vector
-	int m_cellCol;					//cell col in block vector
+	int m_cellColumn;					//cell column in block vector
 	int m_totalRowIndex;			//index of row in block grid
-	int m_totalColIndex;			//index of col in block grid
-	bool m_isInitNum;				//true if provided in inital grid
+	int m_totalColumnIndex;			//index of column in block grid
+	bool m_isInitialNumber;				//true if provided in initial grid
 public:
 	Position();
-	Position(const int linearPos,const int val);		//default constructor		
-	void setValue(int val);								//set value of cell
-	void setIsInitNum(bool filled);						//marks cell as initial
-	
+	Position(const int linearPos, const int value);		//default constructor		
+	void setValue(int value);								//set value of cell
+	void setIsInitialNumber(bool filled);						//marks cell as initial
+
 	int getIndex()const;			//returning position data
-	int getGridRowNum()const;		//returning row of grid where block that the cell is in!
-	int getGridColNum()const;		//returning col of grid where block that the cell is in!
+	int getGridRowNumber()const;		//returning row of grid where block that the cell is in!
+	int getGridColumnNumber()const;		//returning column of grid where block that the cell is in!
 	int getCellRow()const;			//returning row block that the cell is in!
-	int getCellCol()const;			//returning col block that the cell is in!
+	int getCellColumn()const;			//returning column block that the cell is in!
 	int getTotalRowIndex()const;	//returning whole puzzle's row number which cell is in 
-	int getTotalColIndex()const;	//returning whole puzzle's col number which cell is in
+	int getTotalColumnIndex()const;	//returning whole puzzle's column number which cell is in
 	int getValue()const;			//get the cell value
-	bool getIsInit()const;			//return whether cell is marked as initial or not
+	bool getIsInitial()const;			//return whether cell is marked as initial or not
 	~Position();
 };
 
+
+#endif // !POSITION_H

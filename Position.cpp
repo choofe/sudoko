@@ -5,39 +5,39 @@
 Position::Position() : 
 	m_index{0},
 	m_value{0},
-	m_gridRowNum{0},
-	m_gridColNum{0},
+	m_gridRowNumber{0},
+	m_gridColumnNumber{0},
 	m_cellRow{0},
-	m_cellCol{0},
+	m_cellColumn{0},
 	m_totalRowIndex{0},
-	m_totalColIndex{0},
-	m_isInitNum{ false }
+	m_totalColumnIndex{0},
+	m_isInitialNumber{ false }
 {}
 //constructor with setting position using
 //3x3 grid of 3x3 blocks
-//if val is non zero cell is initial
-Position::Position(const int linearPos, const int val) :
-	m_index{ linearPos },
-	m_value{ val },
-	m_gridRowNum{ linearPos / 27 }, // is ((linearPos / 9) / 3)
-	m_gridColNum{ (linearPos % 9) / 3 },
-	m_cellRow{ (linearPos / 9) % 3 },
-	m_cellCol{ (linearPos % 9) % 3 },
-	m_totalRowIndex{ linearPos / 9 },
-	m_totalColIndex{ linearPos % 9 },
-	m_isInitNum{false} //default is non initial we would set this member with correct value somewhere else
+//if value is non zero cell is initial
+Position::Position(const int linearPosition, const int value) :
+	m_index{ linearPosition },
+	m_value{ value },
+	m_gridRowNumber{ linearPosition / 27 }, // is ((linearPos / 9) / 3)
+	m_gridColumnNumber{ (linearPosition % 9) / 3 },
+	m_cellRow{ (linearPosition / 9) % 3 },
+	m_cellColumn{ (linearPosition % 9) % 3 },
+	m_totalRowIndex{ linearPosition / 9 },
+	m_totalColumnIndex{ linearPosition % 9 },
+	m_isInitialNumber{false} //default is non initial we would set this member with correct value somewhere else
 {
 
 }
 
-void Position::setValue(int val)
+void Position::setValue(int value)
 {
-	m_value = val;
+	m_value = value;
 }
 
-void Position::setIsInitNum(bool filled)
+void Position::setIsInitialNumber(bool filled)
 {
-	m_isInitNum = filled;
+	m_isInitialNumber = filled;
 }
 
 int Position::getIndex() const
@@ -45,14 +45,14 @@ int Position::getIndex() const
 	return m_index;
 }
 
-int Position::getGridRowNum() const
+int Position::getGridRowNumber() const
 {
-	return m_gridRowNum;
+	return m_gridRowNumber;
 }
 
-int Position::getGridColNum() const
+int Position::getGridColumnNumber() const
 {
-	return m_gridColNum;
+	return m_gridColumnNumber;
 }
 
 int Position::getCellRow() const
@@ -60,9 +60,9 @@ int Position::getCellRow() const
 	return m_cellRow;
 }
 
-int Position::getCellCol() const
+int Position::getCellColumn() const
 {
-	return m_cellCol;
+	return m_cellColumn;
 }
 
 int Position::getTotalRowIndex() const
@@ -70,9 +70,9 @@ int Position::getTotalRowIndex() const
 	return m_totalRowIndex;
 }
 
-int Position::getTotalColIndex() const
+int Position::getTotalColumnIndex() const
 {
-	return m_totalColIndex;
+	return m_totalColumnIndex;
 }
 
 int Position::getValue() const
@@ -80,9 +80,9 @@ int Position::getValue() const
 	return m_value;
 }
 
-bool Position::getIsInit() const
+bool Position::getIsInitial() const
 {
-	return m_isInitNum;
+	return m_isInitialNumber;
 }
 
 Position::~Position()

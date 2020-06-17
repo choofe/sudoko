@@ -4,22 +4,23 @@
 // default constructor
 BlockGrid::BlockGrid()
 {
+	
 	m_grid.resize(GRIDROWSIZE);
 	for (size_t i{ 0 }; i < GRIDROWSIZE; ++i)
 		m_grid.at(i).resize(GRIDCOLSIZE);
 	for (size_t i{ 0 }; i < GRIDROWSIZE; ++i)
 		for (size_t j{ 0 }; j < GRIDCOLSIZE; ++j)
 		{
-			//creating a temporary block with use of default costructor of block class 
+			//creating a temporary block with use of default constructor of block class 
 			//which makes random block
 			Block temp;
 			m_grid.at(i).at(j) = temp;
 		}
 			
 }
-BlockGrid::BlockGrid(const grid_t& b) //copy constructor
+BlockGrid::BlockGrid(const grid_t& blockGrid) //copy constructor
 {
-	m_grid = b;
+	m_grid = blockGrid;
 }
 // too lazy to think of a more intuitive way to call this constructor!
 // so just throw a parameter to do so!!! 
@@ -39,13 +40,28 @@ BlockGrid::BlockGrid(bool zero)
 		}
 
 }
+void BlockGrid::resetToZero()
+{
+	BlockGrid temp{ true };
+	m_grid = temp.m_grid;
+}
+		
+
+const Block& BlockGrid::operator[](const Pair& x) const
+{
+	return m_grid[x.getRow()][x.getColumn()];
+}
+Block& BlockGrid::operator[](const Pair& x)
+{
+	return m_grid[x.getRow()][x.getColumn()];
+}
 //returns block in [x,y] of m_grid used when need a unknown object
 const Block& BlockGrid::getBlock(int x, int y) const
 {
 	return m_grid.at(x).at(y);
 }
 
-// overloaded getblock returning known object
+// overloaded get block returning known object
 Block& BlockGrid::getBlock(int x, int y) 
 {
 	return m_grid.at(x).at(y);
@@ -61,29 +77,29 @@ BlockGrid::~BlockGrid()
 {
 }
 
-std::ostream& operator<<(std::ostream& out, BlockGrid& b)
+std::ostream& operator<<(std::ostream& out, BlockGrid& blockGrid)
 {
-	out << b.m_grid;
+	out << blockGrid.m_grid;
 	return out;
 }
 
-std::ostream& operator<<(std::ostream& out, grid_t& b)
+std::ostream& operator<<(std::ostream& out, grid_t& grid)
 {
 
-	for (size_t i{ 0 }; i < b.size(); ++i)
+	for (size_t i{ 0 }; i < grid.size(); ++i)
 	{
 		out << "-------+------+-------" << '\n';
-		for (size_t k{ 0 }; k < b.at(0).at(0).getRowSize(); ++k)
+		for (int k{ 0 }; k < grid.at(0).at(0).getRowSize(); ++k)
 		{
-			out << "|";
-			for (size_t j{ 0 }; j < b.at(i).size(); ++j)
+			out << '|';
+			for (size_t j{ 0 }; j < grid.at(i).size(); ++j)
 			{
-				for (size_t l{ 0 }; l < b.at(i).at(j).getBlock().at(0).size(); ++l)
+				for (size_t l{ 0 }; l < grid.at(i).at(j).getBlock().at(0).size(); ++l)
 				{
-					block_t t{ b.at(i).at(j).getBlock() };
-					out << t.at(k).at(l) << " ";
+					block_t t{ grid.at(i).at(j).getBlock() };
+					out << t.at(k).at(l) << ' ';
 				}
-				out << "|";
+				out << '|';
 			}
 			out << '\n';
 		}
