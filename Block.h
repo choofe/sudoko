@@ -8,7 +8,7 @@
 #ifndef BLOCK_H
 #define BLOCK_H
 constexpr int BLOCKROWSIZE = 3;
-constexpr int BLOCKCOLSIZE = 3;
+constexpr int BLOCKCOLUMNSIZE = 3;
 
 
 
@@ -39,7 +39,7 @@ public:
 	void swap(block_t& block, Pair& pair1, Pair& pair2); //swap 2 cells
 	const std::vector<int> getRow(int rowIndex) const; //return whole row
 	const std::vector<int> getColumn(int rowIndex) const; //return whole col
-	~Block();
+	
 };
 
 

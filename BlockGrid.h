@@ -1,9 +1,12 @@
-#include"Block.h"
+#include "Block.h"
+#include "Position.h"
 
 #ifndef BLOCKGRID_H
 #define BLOCKGRID_H
+using position_t = std::vector<Position>;
+
 constexpr int GRIDROWSIZE = 3;
-constexpr int GRIDCOLSIZE = 3;
+constexpr int GRIDCOLUMNSIZE = 3;
 
 class BlockGrid
 {
@@ -14,13 +17,13 @@ public:
 	BlockGrid(const grid_t& b);
 	BlockGrid(bool zero);
 	void resetToZero();
+	void resetToInitial(position_t & positions);
 	friend std::ostream& operator<<(std::ostream& out, BlockGrid& b);
 	const Block& operator[](const Pair& x) const;
 	Block& operator[](const Pair& x);
 	const Block& getBlock(int x, int y) const;
 	Block& getBlock(int x, int y);
 	const grid_t& getGrid() const;
-	~BlockGrid();
 };
 
 std::ostream& operator<<(std::ostream& out, grid_t& b);

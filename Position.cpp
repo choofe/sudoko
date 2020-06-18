@@ -85,6 +85,3 @@ bool Position::getIsInitial() const
 	return m_isInitialNumber;
 }
 
-Position::~Position()
-{
-}

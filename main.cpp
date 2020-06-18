@@ -5,14 +5,16 @@
 #include "GridRow.h"
 #include "GridColumn.h"
 #include "Position.h"
+#include <fstream>
+
 
 using position_t = std::vector<Position>; 
 
 std::ostream& operator<<(std::ostream& out, const block_t& blockt)   //overloading << operator to print out a block of 1~9
 {
-	for (size_t  i{ 0 }; i < blockt.size(); ++i)
+	for (std::size_t  i{ 0 }; i < blockt.size(); ++i)
 	{
-		for (size_t j{ 0 }; j < blockt.at(i).size(); ++j)
+		for (std::size_t j{ 0 }; j < blockt.at(i).size(); ++j)
 		{
 			out << blockt.at(i).at(j) << " ";
 		}
@@ -62,15 +64,15 @@ void fillRandom(BlockGrid& grid, int initiallyFilledCellNumber = 25)
 //in the grid.
 position_t initaialPositions(const BlockGrid& grid)
 {
-	grid_t gridt{ grid.getGrid() };
+	const grid_t& gridt{ grid.getGrid() };
 	position_t initial;
 	
 	initial.reserve(81);//increase vector to 82 to reduce resizings
 	
-	for (size_t i{ 0 }; i <81; ++i) //fill initial values with 0 as empty cells
+	for (std::size_t i{ 0 }; i <81; ++i) //fill initial values with 0 as empty cells
 		initial.push_back({ Position(i, 0) }); 
 
-	for (size_t i{ 0 };i<initial.size();++i)
+	for (std::size_t i{ 0 };i<initial.size();++i)
 	{
 		///////////////////////////////////////////////////////////
 		// fetch the value on grid in "i"th position . 
@@ -103,7 +105,7 @@ bool areRulesMet(BlockGrid& grid, position_t& position, int posIndex, int checki
 		&& GridColumn(grid, currentPosition.getTotalColumnIndex()).gridColumnCheck(checkingNumber)
 		);
 }
-int counting{ 0 }; //global variable for counting checking times. no other use. could be ignored!
+int counting{ 1 }; //global variable for counting checking times. no other use. could be ignored!
 constexpr int CHECKISOVER = 81; //magic number for end checking whether solvable or not
 
 //main checking algorithm
@@ -126,6 +128,16 @@ constexpr int CHECKISOVER = 81; //magic number for end checking whether solvable
 void isCorrect(BlockGrid& grid, position_t& position, int& positionIndex, int& check)
 {
 	++counting;
+	/*if (counting > 250000)
+	{
+		positionIndex = CHECKISOVER;
+		return;
+	}*/
+	if (!(counting % 500000))
+	{
+
+		std::cout << "tried "<< counting<<" so far\n" << grid;
+	}
 	if (positionIndex < 0)
 	{
 		positionIndex = CHECKISOVER;
@@ -165,7 +177,7 @@ void isCorrect(BlockGrid& grid, position_t& position, int& positionIndex, int& c
 						return;
 					}
 				}
-				//std::cout << grid;
+				
 				check = position.at(positionIndex).getValue() + 1; //increase previous non initial cell by 1
 				delete currentPosition;
 				return;
@@ -237,26 +249,124 @@ int main()
 	////block and comment out the following two //
 	////two lines below							//
 	//////////////////////////////////////////////
-	BlockGrid test(true);//create zero filled grid -- no matter true or false it just called that constructor
-	fillRandom(test); // this can be used to create random initial puzzle
+	
+	////////////////////////////////////////////
+	//this is a confirmed solvable  puzzle	//    
+	//it is caught from						// 
+	//https://theconversation.com/good-at-sudoku-heres-some-youll-never-complete-5234 
+	//the answer is also there				//
+	Block a{ {{0,0,0},{1,0,0},{0,0,0}} };     //   
+	Block b{ {{7,0,0},{0,0,0},{4,3,0}} };		//
+	Block c{ {{0,0,0},{0,0,0},{2,0,0}} };		//
+	Block d{ {{0,0,0},{0,0,0},{0,0,0}} };		//
+	Block e{ {{0,0,0},{5,0,9},{0,0,0}} };		//
+	Block f{ {{0,0,6},{0,0,0},{4,1,8}} };		//
+	Block g{ {{0,0,0},{0,0,2},{0,4,0}} };		//
+	Block h{ {{0,8,1},{0,0,0},{0,0,0}} };		//
+	Block i{ {{0,0,0},{0,5,0},{3,0,0}} };		//
+												//
+	//creating grid of blocks					//
+	grid_t gr{ {{a,b,c},{d,e,f},{g,h,i}} };	//
+	BlockGrid test{ gr };						//
+	//to use this table uncomment out this	//
+	//block and comment out the following two //
+	//two lines below							//
+	////////////////////////////////////////////
+	//BlockGrid test(true);//create zero filled grid -- no matter true or false it just called that constructor
+	//fillRandom(test,29); // this can be used to create random initial puzzle
 	std::cout << test;
 
-	//std::cout << test[{1, 1}];
-	position_t positions(initaialPositions(test)); //initializing every cell data withe the initial puzzle
+	position_t positions{ initaialPositions(test) }; //initializing every cell data withe the initial puzzle
 	int check{ 1 }; //starting check number it will change through the process
 	int positionIndex{ 0 };//starting the checks from the first cell
-	{// finding first non initial empty cell on grid
+	// finding first non initial empty cell on grid
 		int firstEmpty{ 0 };
 		while (positions.at(firstEmpty).getIsInitial() == true) ++firstEmpty;
 		positionIndex = firstEmpty;
-	}
-	if (isSolvable(test, positions, positionIndex, check)) //calling checking loop!
+	int solutionCount{ 0 };
+	int puzzleCount{ 0 };
+	while (puzzleCount <= 5)
 	{
-		std::cout << "You have done it" << '\n' << "takes " << counting << " checking\n";
-		std::cout << test;
+		counting = 0;
+		while (check <= 9)
+		{
+			if (solutionCount > 1) break;
+			if (isSolvable(test, positions, positionIndex, check)) //calling checking loop!
+			{
+				++solutionCount;
+				std::cout << test;
+				check = positions.at(firstEmpty).getValue() + 1;
+				test.resetToInitial(positions);
+				positions = initaialPositions(test);
+				positionIndex = firstEmpty;
+			}
+			else
+			{
+				test.resetToInitial(positions);
+				positions = initaialPositions(test);
+				positionIndex = firstEmpty;
+				++check;
+			}
+		}
+		if (solutionCount == 1)
+		{
+			std::cout << "There is a unique solution\n";
+			std::ofstream outfile{ "puzzle.txt",std::ios::app };
+			outfile << test;
+			outfile.close();
+			++puzzleCount;
+			
+		}
+
+		else
+		{
+			if (solutionCount >= 1)
+				std::cout << "There are more that one solution";
+			else
+				std::cout << "No solution found\n";
+		}
+
+		test.resetToZero();
+		fillRandom(test, 29);
+		firstEmpty = 0;
+		while (positions.at(firstEmpty).getIsInitial() == true) ++firstEmpty;
+		positionIndex = firstEmpty;
+		positions = initaialPositions(test);
+		solutionCount = 0;
+		check = 1;
+
+
 	}
-	else
-		std::cout << "may be no resolution. checked "<< counting<<" times\n";
+
+	///////////////////////////////////////////////////////
+
+	//BlockGrid temp(true);//create zero filled grid -- no matter true or false it just called that constructor
+	//fillRandom(temp,5); // this can be used to create random initial puzzle
+	//position_t positions2(initaialPositions(temp)); //initializing every cell data withe the initial puzzle
+	//int positionIndex2{ 0 };//starting the checks from the first cell
+	//int check2{ 1 }; //starting check number it will change through the process
+
+	//{// finding first non initial empty cell on grid
+	//	int firstEmpty{ 0 };
+	//	while (positions2.at(firstEmpty).getIsInitial() == true) ++firstEmpty;
+	//	positionIndex2 = firstEmpty;
+	//}
+	//std::cout << temp << '\n' ;
+
+	//while (!(isSolvable(temp, positions2, positionIndex2, check2)))
+	//{
+	//	std::cout << temp << '\n' << "no solution to this";
+	//	temp.resetToZero();
+	//	fillRandom(temp,5); // this can be used to create random initial puzzle
+	//	{// finding first non initial empty cell on grid
+	//		int firstEmpty{ 0 };
+	//		while (positions2.at(firstEmpty).getIsInitial() == true) ++firstEmpty;
+	//		positionIndex2 = firstEmpty;
+	//	}
+	//	check2 = 1;
+	//}
+	//
+	//std::cout << temp << '\n' ;
 
 	return 0;
 }

@@ -12,7 +12,7 @@ public:
 	GridRow(const BlockGrid& grid, int rowIndex);	//default constructor
 	void printGridRow();							//print whole row-experimental
 	bool gridRowCheck(int value);					//check if value is present in whole row
-	~GridRow();
+	
 };
 
 #endif // !GRIDROW_H

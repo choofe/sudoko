@@ -6,10 +6,10 @@ BlockGrid::BlockGrid()
 {
 	
 	m_grid.resize(GRIDROWSIZE);
-	for (size_t i{ 0 }; i < GRIDROWSIZE; ++i)
-		m_grid.at(i).resize(GRIDCOLSIZE);
-	for (size_t i{ 0 }; i < GRIDROWSIZE; ++i)
-		for (size_t j{ 0 }; j < GRIDCOLSIZE; ++j)
+	for (std::size_t i{ 0 }; i < GRIDROWSIZE; ++i)
+		m_grid.at(i).resize(GRIDCOLUMNSIZE);
+	for (std::size_t i{ 0 }; i < GRIDROWSIZE; ++i)
+		for (std::size_t j{ 0 }; j < GRIDCOLUMNSIZE; ++j)
 		{
 			//creating a temporary block with use of default constructor of block class 
 			//which makes random block
@@ -29,11 +29,11 @@ BlockGrid::BlockGrid(const grid_t& blockGrid) //copy constructor
 BlockGrid::BlockGrid(bool zero)
 {
 	m_grid.resize(GRIDROWSIZE);
-	for (size_t i{ 0 }; i < GRIDROWSIZE; ++i)
-		m_grid.at(i).resize(GRIDCOLSIZE);
+	for (std::size_t i{ 0 }; i < GRIDROWSIZE; ++i)
+		m_grid.at(i).resize(GRIDCOLUMNSIZE);
 	
-	for (size_t i{ 0 }; i < GRIDROWSIZE; ++i)
-		for (size_t j{ 0 }; j < GRIDCOLSIZE; ++j)
+	for (std::size_t i{ 0 }; i < GRIDROWSIZE; ++i)
+		for (std::size_t j{ 0 }; j < GRIDCOLUMNSIZE; ++j)
 		{
 			Block temp(true);
 			m_grid.at(i).at(j) = temp;
@@ -44,6 +44,19 @@ void BlockGrid::resetToZero()
 {
 	BlockGrid temp{ true };
 	m_grid = temp.m_grid;
+}
+
+void BlockGrid::resetToInitial(position_t& positions)
+{
+	for (auto i:positions)
+	{
+		if (!(i.getIsInitial()))
+		{
+			
+			m_grid.at(i.getGridRowNumber()).at(i.getGridColumnNumber()).memberSet({ i.getCellRow(),i.getCellColumn() }, 0);
+		}
+	}
+		
 }
 		
 
@@ -73,9 +86,6 @@ const grid_t& BlockGrid::getGrid() const
 	return m_grid;
 }
 
-BlockGrid::~BlockGrid()
-{
-}
 
 std::ostream& operator<<(std::ostream& out, BlockGrid& blockGrid)
 {
@@ -86,15 +96,15 @@ std::ostream& operator<<(std::ostream& out, BlockGrid& blockGrid)
 std::ostream& operator<<(std::ostream& out, grid_t& grid)
 {
 
-	for (size_t i{ 0 }; i < grid.size(); ++i)
+	for (std::size_t i{ 0 }; i < grid.size(); ++i)
 	{
 		out << "-------+------+-------" << '\n';
 		for (int k{ 0 }; k < grid.at(0).at(0).getRowSize(); ++k)
 		{
 			out << '|';
-			for (size_t j{ 0 }; j < grid.at(i).size(); ++j)
+			for (std::size_t j{ 0 }; j < grid.at(i).size(); ++j)
 			{
-				for (size_t l{ 0 }; l < grid.at(i).at(j).getBlock().at(0).size(); ++l)
+				for (std::size_t l{ 0 }; l < grid.at(i).at(j).getBlock().at(0).size(); ++l)
 				{
 					block_t t{ grid.at(i).at(j).getBlock() };
 					out << t.at(k).at(l) << ' ';

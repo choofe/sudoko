@@ -6,9 +6,9 @@ Block::Block(const Block& copyBlock) {m_block = copyBlock.m_block;}		//copy cons
 // so just throw a parameter to do so!!! 
 // and this one create a int'0' filled block
 // no matter zero is true or false
-Block::Block(bool zero) 
+Block::Block(bool) 
 {
-	block_t temp{ block_t(BLOCKROWSIZE, std::vector<int>(BLOCKCOLSIZE)) };
+	block_t temp{ block_t(BLOCKROWSIZE, std::vector<int>(BLOCKCOLUMNSIZE)) };
 	m_block = temp;
 }
 
@@ -16,8 +16,8 @@ Block::Block(bool zero)
 //returns false if value is present in this block
 bool Block::blockCheck(int value)
 {
-	for (size_t i{ 0 }; i < m_block.size(); ++i)
-		for (size_t j{ 0 }; j < m_block.at(0).size(); ++j)
+	for (std::size_t i{ 0 }; i < m_block.size(); ++i)
+		for (std::size_t j{ 0 }; j < m_block.at(0).size(); ++j)
 		{
 			if (value == m_block.at(i).at(j)) return false;
 		}
@@ -28,7 +28,7 @@ bool Block::blockCheck(int value)
 // create a shuffled block_t which contains digits 1~9 in a random order
 Block::Block() //default constructor
 {
-	block_t temp{ block_t(BLOCKROWSIZE, std::vector<int>(BLOCKCOLSIZE)) };
+	block_t temp{ block_t(BLOCKROWSIZE, std::vector<int>(BLOCKCOLUMNSIZE)) };
 	m_block = fillShuffle(temp);
 }
 
@@ -38,8 +38,8 @@ block_t& Block::fillShuffle(block_t& blockt)
 	//fill blockt with sorted number 1 ~ 9
 	//////////////////////////////////////////
 	int count{ 1 };
-	for (size_t i{ 0 }; i < blockt.size(); ++i)
-		for (size_t j{ 0 }; j < blockt.at(0).size(); ++j)
+	for (std::size_t i{ 0 }; i < blockt.size(); ++i)
+		for (std::size_t j{ 0 }; j < blockt.at(0).size(); ++j)
 		{
 			blockt.at(i).at(j) = count;
 			++count;
@@ -75,7 +75,7 @@ void Block::swap(block_t& blockt, Pair& p1, Pair& p2)
 const std::vector<int> Block::getRow(int rowIndex) const
 {
 	std::vector<int> row;
-	for (size_t i{ 0 }; i < m_block.size(); ++i)
+	for (std::size_t i{ 0 }; i < m_block.size(); ++i)
 		row.push_back(m_block.at(rowIndex).at(i));
 	return row;
 }
@@ -83,7 +83,7 @@ const std::vector<int> Block::getRow(int rowIndex) const
 const std::vector<int> Block::getColumn(int colIndex) const
 {
 	std::vector<int> row;
-	for (size_t i{ 0 }; i < m_block.at(colIndex).size(); ++i)
+	for (std::size_t i{ 0 }; i < m_block.at(colIndex).size(); ++i)
 		row.push_back(m_block.at(i).at(colIndex));
 	return row;
 }
@@ -117,8 +117,4 @@ std::ostream& operator<<(std::ostream& out,const Block& block)
 		out << '\n';
 	}
 	return out;
-}
-
-Block::~Block()
-{
 }

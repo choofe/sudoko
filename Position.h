@@ -1,8 +1,6 @@
-
-
 #include "Block.h"
-#include "BlockGrid.h"
 #include "Pair.h"
+
 #ifndef POSITION_H
 #define POSITION_H
 
@@ -33,7 +31,7 @@ public:
 	int getTotalColumnIndex()const;	//returning whole puzzle's column number which cell is in
 	int getValue()const;			//get the cell value
 	bool getIsInitial()const;			//return whether cell is marked as initial or not
-	~Position();
+	
 };
 
 
