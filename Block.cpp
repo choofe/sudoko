@@ -1,7 +1,7 @@
 #include "Block.h"
 
 Block::Block(const block_t& block) :m_block{ block } {} //in case user provide a block_t
-Block::Block(const Block& b) {m_block = b.m_block;}		//copy constructor
+Block::Block(const Block& copyBlock) {m_block = copyBlock.m_block;}		//copy constructor
 // too lazy to think of a more intuitive way to call this constructor!
 // so just throw a parameter to do so!!! 
 // and this one create a int'0' filled block
@@ -12,14 +12,14 @@ Block::Block(bool zero)
 	m_block = temp;
 }
 
-//returns true if val is not present in this block
-//returns false if val is present in this block
-bool Block::blockCheck(int val)
+//returns true if value is not present in this block
+//returns false if value is present in this block
+bool Block::blockCheck(int value)
 {
 	for (size_t i{ 0 }; i < m_block.size(); ++i)
 		for (size_t j{ 0 }; j < m_block.at(0).size(); ++j)
 		{
-			if (val == m_block.at(i).at(j)) return false;
+			if (value == m_block.at(i).at(j)) return false;
 		}
 	return true;
 }
@@ -33,42 +33,42 @@ Block::Block() //default constructor
 }
 
 //shuffling method
-block_t& Block::fillShuffle(block_t& b)
+block_t& Block::fillShuffle(block_t& blockt)
 {
-	//fill b with sorted number 1 ~ 9
+	//fill blockt with sorted number 1 ~ 9
 	//////////////////////////////////////////
 	int count{ 1 };
-	for (size_t i{ 0 }; i < b.size(); ++i)
-		for (size_t j{ 0 }; j < b.at(0).size(); ++j)
+	for (size_t i{ 0 }; i < blockt.size(); ++i)
+		for (size_t j{ 0 }; j < blockt.at(0).size(); ++j)
 		{
-			b.at(i).at(j) = count;
+			blockt.at(i).at(j) = count;
 			++count;
 		}
 	///////////////////////////////////////////
 	
-	//shuffling sort filled b 
+	//shuffling sort filled blockt 
 	///////////////////////////////////////////
 	static std::mt19937 rand{ static_cast<std::mt19937::result_type>(std::time(nullptr)) };
-	static std::uniform_int_distribution row{ 0,static_cast<int>(b.size() - 1) };//uniform distribution between 0 and rowsize 
-	static std::uniform_int_distribution col{ 0,static_cast<int>(b.at(0).size() - 1) };//uniform distribution between 0 and column size
-	int numOfShuffling{ 100 }; //number of shuffling-not !
+	static std::uniform_int_distribution row{ 0,static_cast<int>(blockt.size() - 1) };//uniform distribution between 0 and row size 
+	static std::uniform_int_distribution column{ 0,static_cast<int>(blockt.at(0).size() - 1) };//uniform distribution between 0 and column size
+	int numberOfShuffling{ 100 }; //number of shuffling-not !
 
-	for (int i{ 0 }; i <= numOfShuffling; ++i)
+	for (int i{ 0 }; i <= numberOfShuffling; ++i)
 	{
-		Pair p1(row(rand), col(rand));
-		Pair p2(row(rand), col(rand));
-		swap(b, p1, p2);
+		Pair p1(row(rand), column(rand));
+		Pair p2(row(rand), column(rand));
+		swap(blockt, p1, p2);
 	}
-	return b;
+	return blockt;
 }
 //swapping method
-void Block::swap(block_t& b, Pair& p1, Pair& p2)
+void Block::swap(block_t& blockt, Pair& p1, Pair& p2)
 {
 	if (p1 == p2) return;
-	int t{ 0 };
-	t = b.at(p1.getRow()).at(p1.getCol());
-	b.at(p1.getRow()).at(p1.getCol()) = b.at(p2.getRow()).at(p2.getCol());
-	b.at(p2.getRow()).at(p2.getCol()) = t;
+	int temp{ 0 };
+	temp = blockt.at(p1.getRow()).at(p1.getColumn());
+	blockt.at(p1.getRow()).at(p1.getColumn()) = blockt.at(p2.getRow()).at(p2.getColumn());
+	blockt.at(p2.getRow()).at(p2.getColumn()) = temp;
 }
 
 //returning whole rowIndex row of block
@@ -80,7 +80,7 @@ const std::vector<int> Block::getRow(int rowIndex) const
 	return row;
 }
 //returning whole rowIndex row of block
-const std::vector<int> Block::getCol(int colIndex) const
+const std::vector<int> Block::getColumn(int colIndex) const
 {
 	std::vector<int> row;
 	for (size_t i{ 0 }; i < m_block.at(colIndex).size(); ++i)
@@ -91,14 +91,14 @@ const std::vector<int> Block::getCol(int colIndex) const
 //returning basic data
 const block_t& Block::getBlock() const {return m_block;}
 int Block::getRowSize() { return m_block.size(); } //rows number
-int Block::getColSize() { return m_block.at(0).size(); } //cols number
+int Block::getColumnSize() { return m_block.at(0).size(); } //cols number
 void Block::printBlock() { std::cout << *this; } //print current m_block
 const int Block::memberAccess(int x, int y) const { return m_block.at(x).at(y); } //cell value in [x,y]
 
-//setting value in p with val
-void Block::memberSet(const Pair& p,int val)
+//setting value in pair with value
+void Block::memberSet(const Pair& pair,int value)
 {
-	m_block.at(p.getRow()).at(p.getCol()) = val;
+	m_block.at(pair.getRow()).at(pair.getColumn()) = value;
 }
 
 //believe it or not! this overloading was necessary!!
@@ -108,12 +108,12 @@ std::ostream& operator<<(std::ostream& out, std::ostream& in)
 	return in;
 }
 
-std::ostream& operator<<(std::ostream& out,const Block& b)  
+std::ostream& operator<<(std::ostream& out,const Block& block)  
 {
-	for (unsigned int i{ 0 }; i < b.m_block.size(); ++i)
+	for (unsigned int i{ 0 }; i < block.m_block.size(); ++i)
 	{
-		for (unsigned int j{ 0 }; j < b.m_block[i].size(); ++j)
-			out << b.m_block.at(i).at(j) << " ";
+		for (unsigned int j{ 0 }; j < block.m_block[i].size(); ++j)
+			out << block.m_block.at(i).at(j) << " ";
 		out << '\n';
 	}
 	return out;

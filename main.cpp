@@ -3,18 +3,18 @@
 #include "Block.h"
 #include "BlockGrid.h"
 #include "GridRow.h"
-#include "GridCol.h"
+#include "GridColumn.h"
 #include "Position.h"
 
 using position_t = std::vector<Position>; 
 
-std::ostream& operator<<(std::ostream& out, const block_t& b)   //overloading << operator to print out a block of 1~9
+std::ostream& operator<<(std::ostream& out, const block_t& blockt)   //overloading << operator to print out a block of 1~9
 {
-	for (size_t  i{ 0 }; i < b.size(); ++i)
+	for (size_t  i{ 0 }; i < blockt.size(); ++i)
 	{
-		for (size_t j{ 0 }; j < b.at(i).size(); ++j)
+		for (size_t j{ 0 }; j < blockt.at(i).size(); ++j)
 		{
-			out << b.at(i).at(j) << " ";
+			out << blockt.at(i).at(j) << " ";
 		}
 		out << '\n';
 	}
@@ -24,31 +24,31 @@ std::ostream& operator<<(std::ostream& out, const block_t& b)   //overloading <<
 //fill random cells of 'grid' with random value 1~9 and checks if it is acceptable in terms of sudoko 
 //to form an initial puzzle. there is a magic number on line 32 >> determines how many 
 //initial cells to be filled initially
-void fillRandom(BlockGrid& grid)
+void fillRandom(BlockGrid& grid, int initiallyFilledCellNumber = 25)
 {
 	static std::mt19937 rand{ static_cast<std::mt19937::result_type>(std::time(nullptr)) };
 	static std::uniform_int_distribution digit{ 1,9 };//uniform distribution bet
 	static std::uniform_int_distribution cell{ 0,80 };//uniform distribution bet
-	// magic number! i < VVVV determines how many initial cells would be prefilled in puzzle
-	for (int i{ 1 }; i <= 20; ++i)
+	// magic number! i < VVVV determines how many initial cells would be pre-filled in puzzle
+	for (int i{ 1 }; i <= initiallyFilledCellNumber ; ++i)
 	{
 		int randValue{ digit(rand) };			//random value to inset on grid
 		int randCell{ cell(rand) };				//random position from 0~80 representing cells
-		int gridRowNum{ randCell / 27 };		// block row position in block grid vector
-		int gridColNum{ (randCell % 9) / 3 };	//block col position in block grid vector
+		int gridRowNumber{ randCell / 27 };		// block row position in block grid vector
+		int gridColumnNumber{ (randCell % 9) / 3 };	//block column position in block grid vector
 		int cellRow{ (randCell / 9) % 3 };		//cell row in block vector
-		int cellCol{ (randCell % 9) % 3 };		//cell col in block vector
+		int cellColumn{ (randCell % 9) % 3 };		//cell column in block vector
 		int totalRowIndex{ randCell / 9 };		//index of row in block grid
-		int totalColIndex{ randCell % 9 };		//index of col in block grid
+		int totalColumnIndex{ randCell % 9 };		//index of column in block grid
 
 		//check if there is already a number and the rules are not broken if
 		//fill the cell with randValue
-		if (grid.getBlock(gridRowNum, gridColNum).memberAccess(cellRow, cellCol)== 0 &&
-			grid.getBlock(gridRowNum, gridColNum).blockCheck(randValue) &&
+		if (grid.getBlock(gridRowNumber, gridColumnNumber).memberAccess(cellRow, cellColumn)== 0 &&
+			grid.getBlock(gridRowNumber, gridColumnNumber).blockCheck(randValue) &&
 			GridRow(grid, totalRowIndex).gridRowCheck(randValue) &&
-			GridCol(grid, totalColIndex).gridColCheck(randValue))
+			GridColumn(grid, totalColumnIndex).gridColumnCheck(randValue))
 		{
-			grid.getBlock(gridRowNum, gridColNum).memberSet({ cellRow,cellCol }, randValue); //fill cell with randValue
+			grid.getBlock(gridRowNumber, gridColumnNumber).memberSet({ cellRow,cellColumn }, randValue); //fill cell with randValue
 		}
 		else //put counter one back because this failed iteration should not be count!
 		{
@@ -62,158 +62,156 @@ void fillRandom(BlockGrid& grid)
 //in the grid.
 position_t initaialPositions(const BlockGrid& grid)
 {
-	grid_t b{ grid.getGrid() };
-	position_t init;
+	grid_t gridt{ grid.getGrid() };
+	position_t initial;
 	
-	init.reserve(81);//increase vector to 82 to reduce resizings
+	initial.reserve(81);//increase vector to 82 to reduce resizings
 	
 	for (size_t i{ 0 }; i <81; ++i) //fill initial values with 0 as empty cells
-		init.push_back({ Position(i, 0) }); 
+		initial.push_back({ Position(i, 0) }); 
 
-	for (size_t i{ 0 };i<init.size();++i)
+	for (size_t i{ 0 };i<initial.size();++i)
 	{
 		///////////////////////////////////////////////////////////
 		// fetch the value on grid in "i"th position . 
 		//"i" have been already converted to grid row and cell and cell row and 
-		//col and stored in i th member of vector init
+		//column and stored in i th member of vector initial
 		//////////////////////////////////////////////////////////
-		int value{ b.at(init.at(i).getGridRowNum()).at(init.at(i).getGridColNum()). 
-			getBlock().at(init.at(i).getCellRow()).at(init.at(i).getCellCol()) };   
+		int value{ gridt.at(initial.at(i).getGridRowNumber()).at(initial.at(i).getGridColumnNumber()). 
+			getBlock().at(initial.at(i).getCellRow()).at(initial.at(i).getCellColumn()) };   
 		
 		if (value != 0)// if there is an initial number in cell
 		{
-			init.at(i).setValue(value); //store the value
+			initial.at(i).setValue(value); //store the value
 
-			init.at(i).setIsInitNum(true); //mark the position as initial.
+			initial.at(i).setIsInitialNumber(true); //mark the position as initial.
 		}
 	}
-	return init;
+	return initial;
 }
 
 //checks the rules of sudoko 
-//checks if 'checkingNum' in cell with 'posIndex' in 'grid' is a correct answer
+//checks if 'checkingNum' in cell with 'positionIndex' in 'grid' is a correct answer
 //returns true id it is and false if it isn't
-bool areRulesMet(BlockGrid& grid, position_t& pos, int posIndex, int checkingNum)
+bool areRulesMet(BlockGrid& grid, position_t& position, int posIndex, int checkingNumber)
 {
-	Position curPos{ pos.at(posIndex) };
+	Position currentPosition{ position.at(posIndex) };
 	return (
-		checkingNum <= 9 
-		&& grid.getBlock(curPos.getGridRowNum(), curPos.getGridColNum()).blockCheck(checkingNum) 
-		&& GridRow(grid, curPos.getTotalRowIndex()).gridRowCheck(checkingNum) 
-		&& GridCol(grid, curPos.getTotalColIndex()).gridColCheck(checkingNum)
+		checkingNumber <= 9 
+		&& grid.getBlock(currentPosition.getGridRowNumber(), currentPosition.getGridColumnNumber()).blockCheck(checkingNumber) 
+		&& GridRow(grid, currentPosition.getTotalRowIndex()).gridRowCheck(checkingNumber) 
+		&& GridColumn(grid, currentPosition.getTotalColumnIndex()).gridColumnCheck(checkingNumber)
 		);
 }
 int counting{ 0 }; //global variable for counting checking times. no other use. could be ignored!
 constexpr int CHECKISOVER = 81; //magic number for end checking whether solvable or not
 
 //main checking algorithm
-//if 'curPos' is marked as initial go to next cell if posIndex > 80 it means all cells are checked and chech is over
+//if 'currentPosition' is marked as initial go to next cell if positionIndex > 80 it means all cells are checked and check is over
 //make check from 1
-//posIndex is the linear position for cells 0~80
+//positionIndex is the linear position for cells 0~80
 //check is the number to check in cell
 //
 //the algorithms is as fallows
-//if after some checking posIndex goes negative it means all possible numbers checked 
+//if after some checking positionIndex goes negative it means all possible numbers checked 
 //in first cell there is no acceptable solution. return CHECKISOVER
-//if 'curPos' isn't marked as initial check if check is correct in curPos position
-//if it doen't and there is more number to check (check < 9) increase check by 1
+//if 'currentPosition' isn't marked as initial check if check is correct in currentPosition position
+//if it doesn't and there is more number to check (check < 9) increase check by 1
 //if there is no more number to check (check > 9) clear value of this cell go back to 
-//previus NON initial cell (reduce posIndex by at least 1) and increase that cell's value by one!
-//if curPos isn't initial marked abd check is a possible correct number
-//chenge the value of posIndex member of pos and update grid (put the possible answer in grid)
-//goto next posIndex and make check from 1
+//previous NON initial cell (reduce positionIndex by at least 1) and increase that cell's value by one!
+//if currentPosition isn't initial marked and check is a possible correct number
+//change the value of positionIndex member of position and update grid (put the possible answer in grid)
+//goto next positionIndex and make check from 1
 //
-void isCorrect(BlockGrid& grid, position_t& pos, int& posIndex, int& check)
+void isCorrect(BlockGrid& grid, position_t& position, int& positionIndex, int& check)
 {
 	++counting;
-	if (posIndex < 0)
+	if (positionIndex < 0)
 	{
-		posIndex = CHECKISOVER;
+		positionIndex = CHECKISOVER;
 		return;
 	}
-	Position* curPos{ new Position }; //currentPosition
-	*curPos = pos.at(posIndex);
-	if (!curPos->getIsInit())
+	Position* currentPosition{ new Position }; //currentPosition
+	*currentPosition = position.at(positionIndex);
+	if (!currentPosition->getIsInitial())
 	{
-		if (!areRulesMet(grid, pos, posIndex, check))//if current check failed
+		if (!areRulesMet(grid, position, positionIndex, check))//if current check failed
 		{
 			if (!(check > 9)) //check if there is more number
 			{
-				delete curPos;
+				delete currentPosition;
 				++check;
 				return;
 			}
-			else //run out of numbers go back to 1st previus non initial marked cell
+			else //run out of numbers go back to 1st previous non initial marked cell
 			{
-				Position* cPos{ new Position };
-				*cPos = pos.at(posIndex);
-				pos.at(posIndex).setValue(0);
-				grid.getBlock(cPos->getGridRowNum(), cPos->getGridColNum()).memberSet({ cPos->getCellRow(), cPos->getCellCol() }, 0);
-				delete cPos;
-				--posIndex;
-				if ((posIndex < 0))
+				//delete whatever possibly is in current cell 
+				position.at(positionIndex).setValue(0);
+				grid.getBlock(currentPosition->getGridRowNumber(), currentPosition->getGridColumnNumber()).memberSet({ currentPosition->getCellRow(), currentPosition->getCellColumn() }, 0);
+				
+				--positionIndex;
+				if ((positionIndex < 0))
 				{
-					posIndex = CHECKISOVER;
+					positionIndex = CHECKISOVER;
 					return;
 				}
 
-				while (pos.at(posIndex).getIsInit()) // go back to previus NON initial
+				while (position.at(positionIndex).getIsInitial()) // go back to previous NON initial
 				{
-					--posIndex;
-					if ((posIndex < 0))
+					--positionIndex;
+					if ((positionIndex < 0))
 					{
-						posIndex = CHECKISOVER;
+						positionIndex = CHECKISOVER;
 						return;
 					}
 				}
 				//std::cout << grid;
-				check = pos.at(posIndex).getValue() + 1; //increase previus non initial cell by 1
-				delete curPos;
+				check = position.at(positionIndex).getValue() + 1; //increase previous non initial cell by 1
+				delete currentPosition;
 				return;
 			}
 		}
 		else  //if current check succeed
 		{
-			pos.at(posIndex).setValue(check);
-			grid.getBlock(curPos->getGridRowNum(), curPos->getGridColNum()).memberSet({ curPos->getCellRow(), curPos->getCellCol() }, check);
-			delete curPos;
+			position.at(positionIndex).setValue(check);
+			grid.getBlock(currentPosition->getGridRowNumber(), currentPosition->getGridColumnNumber()).memberSet({ currentPosition->getCellRow(), currentPosition->getCellColumn() }, check);
+			delete currentPosition;
 			check = 1;
-			++posIndex;
+			++positionIndex;
 			return;
 		}
 	}
-	else //if posIndex is initial marked
+	else //if positionIndex is initial marked
 	{
-		if (posIndex == 80) //if check is over
+		if (positionIndex == 80) //if check is over
 		{
-			posIndex = CHECKISOVER;
+			positionIndex = CHECKISOVER;
 			return;
 		}
 
-		delete curPos; //if check goes on
-		++posIndex;
+		delete currentPosition; //if check goes on
+		++positionIndex;
 		check = 1;
 		return;
 	}
 }
 
-bool isSolvable(BlockGrid& grid, position_t& pos, int& posIndex, int& check)
+bool isSolvable(BlockGrid& grid, position_t& position, int& positionIndex, int& check)
 {
-	while (pos.at(posIndex).getIndex() <= 80)
+	while (position.at(positionIndex).getIndex() <= 80)
 	{
-		isCorrect(grid, pos, posIndex, check);
-		if ((posIndex < 0 || posIndex == CHECKISOVER))
+		isCorrect(grid, position, positionIndex, check);
+		if ((positionIndex < 0 || positionIndex == CHECKISOVER))
 		{
-			posIndex = CHECKISOVER;
+			positionIndex = CHECKISOVER;
 			break;
 		}
 
 	}
 	bool allDone{ true };
-	for (auto i : pos) //check if all cells are filled!
+	for (auto i : position) //check if all cells are filled!
 		if (i.getValue() == 0) allDone = false;
-	if (allDone) return true;
-	else return false;
+	return (allDone) ? true : false;
 }
 
 int main()
@@ -242,21 +240,23 @@ int main()
 	BlockGrid test(true);//create zero filled grid -- no matter true or false it just called that constructor
 	fillRandom(test); // this can be used to create random initial puzzle
 	std::cout << test;
+
+	//std::cout << test[{1, 1}];
 	position_t positions(initaialPositions(test)); //initializing every cell data withe the initial puzzle
-	int check{ 1 }; //starting check number it will change throgh the process
-	int posIndex{ 0 };//starting the checks from the first cell
+	int check{ 1 }; //starting check number it will change through the process
+	int positionIndex{ 0 };//starting the checks from the first cell
 	{// finding first non initial empty cell on grid
 		int firstEmpty{ 0 };
-		while (positions.at(firstEmpty).getIsInit() == true) ++firstEmpty;
-		posIndex = firstEmpty;
+		while (positions.at(firstEmpty).getIsInitial() == true) ++firstEmpty;
+		positionIndex = firstEmpty;
 	}
-	if (isSolvable(test,positions,posIndex,check)) //calling checking loop!
+	if (isSolvable(test, positions, positionIndex, check)) //calling checking loop!
 	{
 		std::cout << "You have done it" << '\n' << "takes " << counting << " checking\n";
 		std::cout << test;
 	}
 	else
-		std::cout << "may be no resolution";
+		std::cout << "may be no resolution. checked "<< counting<<" times\n";
 
 	return 0;
 }

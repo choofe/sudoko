@@ -20,12 +20,12 @@ void GridRow::printGridRow()
 		std::cout << i << " ";
 }
 
-//return true if val is not present in whole row and false otherwise
-bool GridRow::gridRowCheck(int val)
+//return true if value is not present in whole row and false otherwise
+bool GridRow::gridRowCheck(int value)
 {
-	for (int i{ 0 }; i < m_gridRow.size(); ++i)
+	for (size_t i{ 0 }; i < m_gridRow.size(); ++i)
 	{
-		if (val == m_gridRow.at(i)) return false;
+		if (value == m_gridRow.at(i)) return false;
 	}
 	return true;
 }

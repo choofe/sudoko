@@ -30,10 +30,10 @@
     <ClCompile Include="GridRow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GridCol.cpp">
+    <ClCompile Include="Position.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Position.cpp">
+    <ClCompile Include="GridColumn.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -50,10 +50,10 @@
     <ClInclude Include="GridRow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GridCol.h">
+    <ClInclude Include="Position.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Position.h">
+    <ClInclude Include="GridColumn.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
