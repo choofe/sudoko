@@ -1,0 +1,10 @@
+﻿  BlockGrid.cpp
+Q:\VS Projects\sudoku\BlockGrid.cpp(76): warning C4018: '<': signed/unsigned mismatch
+  GridCol.cpp
+Q:\VS Projects\sudoku\GridCol.cpp(27): warning C4018: '<': signed/unsigned mismatch
+  GridRow.cpp
+Q:\VS Projects\sudoku\GridRow.cpp(26): warning C4018: '<': signed/unsigned mismatch
+  Position.cpp
+  main.cpp
+  Generating Code...
+  sudoku.vcxproj -> Q:\VS Projects\sudoku\Debug\sudoku.exe

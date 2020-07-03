@@ -1,4 +1,5 @@
 #include "Block.h"
+#include "Position.h"
 
 Block::Block(const block_t& block) :m_block{ block } {} //in case user provide a block_t
 Block::Block(const Block& copyBlock) {m_block = copyBlock.m_block;}		//copy constructor
@@ -8,13 +9,35 @@ Block::Block(const Block& copyBlock) {m_block = copyBlock.m_block;}		//copy cons
 // no matter zero is true or false
 Block::Block(bool) 
 {
+}
+
+Block::Block( position_t & blockPositions)
+{
+	
 	block_t temp{ block_t(BLOCKROWSIZE, std::vector<int>(BLOCKCOLUMNSIZE)) };
+	std::size_t count{ 0 };
+	
+	for(auto& i:temp)
+		for (auto& j : i)
+		{
+			j = blockPositions[count].getValue();
+			++count;
+		}
 	m_block = temp;
 }
 
 //returns true if value is not present in this block
 //returns false if value is present in this block
-bool Block::blockCheck(int value)
+bool Block::blockCheck(int value) 
+{
+	for (std::size_t i{ 0 }; i < m_block.size(); ++i)
+		for (std::size_t j{ 0 }; j < m_block.at(0).size(); ++j)
+		{
+			if (value == m_block.at(i).at(j)) return false;
+		}
+	return true;
+}
+bool Block::blockCheck(int value) const
 {
 	for (std::size_t i{ 0 }; i < m_block.size(); ++i)
 		for (std::size_t j{ 0 }; j < m_block.at(0).size(); ++j)
@@ -87,6 +110,7 @@ const std::vector<int> Block::getColumn(int colIndex) const
 		row.push_back(m_block.at(i).at(colIndex));
 	return row;
 }
+
 
 //returning basic data
 const block_t& Block::getBlock() const {return m_block;}

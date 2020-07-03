@@ -87,6 +87,7 @@ const grid_t& BlockGrid::getGrid() const
 }
 
 
+
 std::ostream& operator<<(std::ostream& out, BlockGrid& blockGrid)
 {
 	out << blockGrid.m_grid;

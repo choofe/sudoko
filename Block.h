@@ -1,21 +1,15 @@
 #include <iostream>
-#include <cmath>
 #include <vector>
 #include <random>
 #include <ctime>
 #include "Pair.h"
+#include "Header.h"
+
 
 #ifndef BLOCK_H
 #define BLOCK_H
 constexpr int BLOCKROWSIZE = 3;
 constexpr int BLOCKCOLUMNSIZE = 3;
-
-
-
-using block_t = std::vector<std::vector<int>>;
-class Block;
-
-using grid_t = std::vector<std::vector<Block>>;
 
 class Block
 {
@@ -27,7 +21,9 @@ public:
 	Block(const block_t& block);		//constructor to initialize from a user provided board_t
 	Block(const Block& block);				//copy constructor
 	Block(bool zero);					//copy constructor
+	Block(position_t & blockPositions);
 	bool blockCheck(int value);			//check if value is present in this block
+	bool blockCheck(int value) const;			//check if value is present in this block
 	friend std::ostream& operator<<(std::ostream& out, const Block& block);//printing this block
 	void printBlock();//same as above line-experimental purpose
 	const int memberAccess(int x, int y)const; //cell value getter 

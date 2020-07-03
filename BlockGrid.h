@@ -1,9 +1,8 @@
-#include "Block.h"
 #include "Position.h"
+#include "Header.h"
 
 #ifndef BLOCKGRID_H
 #define BLOCKGRID_H
-using position_t = std::vector<Position>;
 
 constexpr int GRIDROWSIZE = 3;
 constexpr int GRIDCOLUMNSIZE = 3;
@@ -24,6 +23,7 @@ public:
 	const Block& getBlock(int x, int y) const;
 	Block& getBlock(int x, int y);
 	const grid_t& getGrid() const;
+	
 };
 
 std::ostream& operator<<(std::ostream& out, grid_t& b);

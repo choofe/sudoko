@@ -153,6 +153,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Algorithm.cpp" />
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="BlockGrid.cpp" />
     <ClCompile Include="GridColumn.cpp" />
@@ -160,12 +161,16 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Pair.cpp" />
     <ClCompile Include="Position.cpp" />
+    <ClCompile Include="Functions.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Algorithm.h" />
     <ClInclude Include="Block.h" />
     <ClInclude Include="BlockGrid.h" />
     <ClInclude Include="GridColumn.h" />
     <ClInclude Include="GridRow.h" />
+    <ClInclude Include="functions.h" />
+    <ClInclude Include="Header.h" />
     <ClInclude Include="Pair.h" />
     <ClInclude Include="Position.h" />
   </ItemGroup>

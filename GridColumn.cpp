@@ -2,13 +2,13 @@
 
 
 //creating a whole 9 element of 'columnIndex'th column in grid
-GridColumn::GridColumn(const BlockGrid& grid, int colIndex)
+GridColumn::GridColumn(const BlockGrid& grid, int columnIndex)
 {
-	int blockGridColumn{ colIndex / 3 };
+	int blockGridColumn{ columnIndex / 3 };
 	m_gridColumn.reserve(TOTALCOLUMNSIZE); //avoiding resizes
 	for (std::size_t i{ 0 }; i < GRIDCOLUMNSIZE; ++i)
 	{
-		auto tempColumn{ grid.getBlock(i,blockGridColumn).getColumn(colIndex % 3) };
+		auto tempColumn{ grid.getBlock(i,blockGridColumn).getColumn(columnIndex % 3) };
 		for (auto j : tempColumn)
 			m_gridColumn.push_back(j);
 	}
