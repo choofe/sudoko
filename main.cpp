@@ -52,43 +52,20 @@ int main()
 	////two lines below							//
 	//////////////////////////////////////////////
 
-	//////////////////////////////////////////////
-	////this is a confirmed solvable  puzzle	//    
-	////it is caught from						// 
-	////https://theconversation.com/good-at-sudoku-heres-some-youll-never-complete-5234 
-	////the answer is also there				//
-	//Block a{ {{0,0,0},{1,0,0},{0,0,0}} };     //   
-	//Block b{ {{7,0,0},{0,0,0},{4,3,0}} };		//
-	//Block c{ {{0,0,0},{0,0,0},{2,0,0}} };		//
-	//Block d{ {{0,0,0},{0,0,0},{0,0,0}} };		//
-	//Block e{ {{0,0,0},{5,0,9},{0,0,0}} };		//
-	//Block f{ {{0,0,6},{0,0,0},{4,1,8}} };		//
-	//Block g{ {{0,0,0},{0,0,2},{0,4,0}} };		//
-	//Block h{ {{0,8,1},{0,0,0},{0,0,0}} };		//
-	//Block i{ {{0,0,0},{0,5,0},{3,0,0}} };		//
-	//											//
-	////creating grid of blocks					//
-	//grid_t gr{ {{a,b,c},{d,e,f},{g,h,i}} };	//
-	//BlockGrid test{ gr };						//
-	////to use this table uncomment out this	//
-	////block and comment out the following two //
-	////two lines below							//
-	//////////////////////////////////////////////
-	
 	////////////////////////////////////////////
 	//this is a confirmed solvable  puzzle	//    
 	//it is caught from						// 
 	//https://theconversation.com/good-at-sudoku-heres-some-youll-never-complete-5234 
 	//the answer is also there				//
-	Block a{ {{9,8,7},{0,0,0},{0,0,0}} };     //   
-	Block b{ {{0,0,0},{0,0,0},{0,0,0}} };		//
-	Block c{ {{0,0,0},{0,0,0},{0,0,0}} };		//
+	Block a{ {{0,0,0},{1,0,0},{0,0,0}} };     //   
+	Block b{ {{7,0,0},{0,0,0},{4,3,0}} };		//
+	Block c{ {{0,0,0},{0,0,0},{2,0,0}} };		//
 	Block d{ {{0,0,0},{0,0,0},{0,0,0}} };		//
-	Block e{ {{0,0,0},{0,0,0},{0,0,0}} };		//
-	Block f{ {{0,0,0},{0,0,0},{0,0,0}} };		//
-	Block g{ {{0,0,0},{0,0,0},{0,0,0}} };		//
-	Block h{ {{0,0,0},{0,0,0},{0,0,0}} };		//
-	Block i{ {{0,0,0},{0,0,0},{0,0,0}} };		//
+	Block e{ {{0,0,0},{5,0,9},{0,0,0}} };		//
+	Block f{ {{0,0,6},{0,0,0},{4,1,8}} };		//
+	Block g{ {{0,0,0},{0,0,2},{0,4,0}} };		//
+	Block h{ {{0,8,1},{0,0,0},{0,0,0}} };		//
+	Block i{ {{0,0,0},{0,5,0},{3,0,0}} };		//
 												//
 	//creating grid of blocks					//
 	grid_t gr{ {{a,b,c},{d,e,f},{g,h,i}} };	//
@@ -97,6 +74,29 @@ int main()
 	//block and comment out the following two //
 	//two lines below							//
 	////////////////////////////////////////////
+	
+	//////////////////////////////////////////////
+	////this is a confirmed solvable  puzzle	//    
+	////it is caught from						// 
+	////https://theconversation.com/good-at-sudoku-heres-some-youll-never-complete-5234 
+	////the answer is also there				//
+	//Block a{ {{0,0,0},{0,0,0},{0,0,0}} };     //   
+	//Block b{ {{0,0,0},{0,0,0},{0,0,0}} };		//
+	//Block c{ {{0,0,0},{0,0,0},{0,0,0}} };		//
+	//Block d{ {{0,0,0},{0,0,0},{0,0,0}} };		//
+	//Block e{ {{0,0,0},{0,0,0},{0,0,0}} };		//
+	//Block f{ {{0,0,0},{0,0,0},{0,0,0}} };		//
+	//Block g{ {{0,0,0},{0,0,0},{0,0,0}} };		//
+	//Block h{ {{0,0,0},{0,0,0},{0,0,0}} };		//
+	//Block i{ {{0,0,0},{0,0,0},{0,0,0}} };		//
+	//											//
+	////creating grid of blocks					//
+	//grid_t gr{ {{a,b,c},{d,e,f},{g,h,i}} };	//
+	//BlockGrid test{ gr };						//
+	////to use this table uncomment out this	//
+	////block and comment out the following two //
+	////two lines below							//
+	//////////////////////////////////////////////
 	//BlockGrid test(true);//create zero filled grid -- no matter true or false it just called that constructor
 	//fillRandom(test,29); // this can be used to create random initial puzzle
 	std::cout << test;
@@ -119,6 +119,10 @@ int main()
 	int counting{ 1 };
 	for (int i{ 1 }; i < 500000; ++i)
 	{
+		if (i == 322558)
+		{
+			std::cout << "";
+		}
 		nextBlockComplete(test, blockZero);
 		//nextBlockComplete(test, blockZero);
 		++counting;

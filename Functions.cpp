@@ -350,17 +350,14 @@ void nextBlockComplete(BlockGrid& grid, position_t& firstBlock)
 			break;
 		}
 	}//for
-	if (it >= 9) return;
-	if (it == 0 && !firstBlock[it].isThereMoreNumber())
-	{
-		std::cout << "finished permutation\n";
-		return;
-	}
+	
 	
 	++it;//first empty cell!  otherwise 
 	
-	if (it == 8 && firstBlock[it].getValue() != 0)
+	if (it >=9 )
 	{
+		g_finishedChecking = true;
+		std::cout << "finished permutation\n";
 		return;
 	}
 	//std::cout << grid;
@@ -420,7 +417,11 @@ void nextBlockComplete(BlockGrid& grid, position_t& firstBlock)
 				--it;
 				if (it < 0) break;
 			}
-			if (it < 0) break;
+			if (it < 0)
+			{
+				it = 0;
+				break;
+			}
 			if (firstBlock[it].isThereMoreNumber())
 			{
 				firstBlock[it].setCheckIndex(firstBlock[it].getCheckIndex() + 1);////is problem?
@@ -430,6 +431,13 @@ void nextBlockComplete(BlockGrid& grid, position_t& firstBlock)
 		}
 
 		
+	}
+	/////
+	if (it == 0 && !firstBlock[it].isThereMoreNumber())
+	{
+		g_finishedChecking = true;
+		std::cout << "finished permutation\n";
+		return;
 	}
 
 }
